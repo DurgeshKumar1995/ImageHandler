@@ -52,7 +52,11 @@ public class CustomView extends View {
     private final static int defaultFillColor=Color.parseColor("#000000");
     private final static int defaultTextColor=Color.parseColor("#ffffff");
     private final static int defaultPressColor=Color.parseColor("#616161");
+    private static final String NA = "NA" ;
     private final static int defaultBorderWidth=5;
+    private final static int HALF = 2;
+    private final static int ZERO = 0;
+    private final static int TEN = 10;
     //endregion
 
 
@@ -105,12 +109,12 @@ public class CustomView extends View {
         //region Text
         if (mText != null) {
            mText= mText.toUpperCase();
-            if(mText.length()>2){
-               mText= mText.substring(0,2);
+            if(mText.length()>HALF){
+               mText= mText.substring(ZERO,HALF);
             }
 
         }else {
-            mText="NA";
+            mText= NA;
         }
         //endregion
 
@@ -125,7 +129,7 @@ public class CustomView extends View {
         mPressPaint=new Paint();
         mPressPaint.setAntiAlias(true);
         mPressPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        mPressPaint.setStrokeWidth(5);
+        mPressPaint.setStrokeWidth(defaultBorderWidth);
         mPressPaint.setColor(mPressColor);
 
         mBorderPaint=new Paint();
@@ -148,7 +152,7 @@ public class CustomView extends View {
        // mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 
 
-        if(imagId!=5) {
+         if(imagId!=defaultBorderWidth) {
             mBitmap = BitmapFactory.decodeResource(getResources(), imagId);
             mBitmapShader = new BitmapShader(mBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
             mPaint = new Paint();
@@ -171,20 +175,20 @@ public class CustomView extends View {
 
 
 
-        canvas.drawCircle(getMeasuredWidth()/2,getMeasuredHeight()/2,(getMeasuredWidth()*10)/(24),mBorderPaint);
+        canvas.drawCircle(getMeasuredWidth()/HALF,getMeasuredHeight()/HALF,(getMeasuredWidth()*TEN)/(24),mBorderPaint);
 
 
-        canvas.drawCircle((getMeasuredWidth()/2),(getMeasuredHeight()/2),(getMeasuredWidth()*10)/(24)-mBorderWidth,backgroundPaint);
+        canvas.drawCircle((getMeasuredWidth()/HALF),(getMeasuredHeight()/HALF),(getMeasuredWidth()*TEN)/(24)-mBorderWidth,backgroundPaint);
         if(mPaint!=null)
-        canvas.drawCircle((getMeasuredWidth()/2),(getMeasuredHeight()/2),(getMeasuredWidth()*10)/(24)-mBorderWidth,mPaint);
+        canvas.drawCircle((getMeasuredWidth()/HALF),(getMeasuredHeight()/HALF),(getMeasuredWidth()*TEN)/(24)-mBorderWidth,mPaint);
 
 
         textPaint.setColor(mTextColor);
-        textPaint.setTextSize((getMeasuredWidth()*10)/23);
+        textPaint.setTextSize((getMeasuredWidth()*TEN)/23);
         textPaint.setTextAlign(Paint.Align.CENTER);
        // canvas=new Canvas(mBitmap);
 
-        canvas.drawText(mText,getMeasuredWidth()/2,(getMeasuredHeight()*10)/15,textPaint);
+        canvas.drawText(mText,getMeasuredWidth()/HALF,(getMeasuredHeight()*TEN)/15,textPaint);
         getDD().draw(canvas);
        // canvas.drawBitmap(mBitmap,(getMeasuredWidth()/6),(getMeasuredWidth()/6),backgroundPaint);
 
@@ -193,7 +197,7 @@ public class CustomView extends View {
 
 
         if(isPressed()){
-            canvas.drawCircle((getMeasuredWidth()/2),(getMeasuredHeight()/2),(getMeasuredWidth()*10)/(24)-mBorderWidth,backgroundPaint);
+            canvas.drawCircle((getMeasuredWidth()/HALF),(getMeasuredHeight()/HALF),(getMeasuredWidth()*TEN)/(24)-mBorderWidth,backgroundPaint);
 
 
         }
