@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <declare-styleable name="CustomView" >
+       <attr name="textColor" format="color" />
+       <attr name="android:textSize" />
+       <attr name="borderColor" format="color"/>
+       <attr name="fillColor" format="color"/>
+       <attr name="borderWidth" format="dimension"/>
+       <attr name="pressColor" format="color"/>
+       <attr name="text" format="string"/>
+       <attr name="fillImage" format="reference"/>
+
+   </declare-styleable>
+
+</resources>
