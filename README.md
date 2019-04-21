@@ -1,6 +1,10 @@
 # ImageHandler
 Image circuler
 
+[![](https://jitpack.io/v/DurgeshKumar1995/ImageHandler.svg)](https://jitpack.io/#DurgeshKumar1995/ImageHandler)
+
+
+
 
 ### Need to follow these steps:-
 
@@ -19,7 +23,7 @@ Image circuler
 
 ```
 	dependencies {
-	        implementation 'com.github.DurgeshKumar1995:ImageHandler:0.3.1'
+	        implementation 'com.github.DurgeshKumar1995:ImageHandler:0.3.2'
 	}
 
 
