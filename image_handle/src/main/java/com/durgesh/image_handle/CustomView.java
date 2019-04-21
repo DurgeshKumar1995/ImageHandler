@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
 import android.graphics.Matrix;
+import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -20,14 +21,19 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.Dimension;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewOutlineProvider;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -36,7 +42,7 @@ import android.widget.TextView;
  */
 
 @SuppressLint("AppCompatCustomView")
-public class CustomView extends View {
+public class CustomView extends ImageView {
 
     int mTextColor,mBorderColor,mPressColor,mFillColor;
     int imagId;
@@ -55,6 +61,8 @@ public class CustomView extends View {
     private static final String NA = "NA" ;
     private final static int defaultBorderWidth=5;
     private final static int HALF = 2;
+    private final static int ONE = 1;
+    private final static String SPACE = " ";
     private final static int ZERO = 0;
     private final static int TEN = 10;
     //endregion
@@ -108,8 +116,18 @@ public class CustomView extends View {
 
         //region Text
         if (mText != null) {
-           mText= mText.toUpperCase();
+           mText= mText.trim().toUpperCase();
             if(mText.length()>HALF){
+                if(mText.contains(SPACE))
+                {
+                    try {
+                        String[] arr = mText.split(SPACE);
+                        mText = arr[ZERO].substring(ZERO, ONE) + arr[1].substring(ZERO, ONE);
+                    }
+                    catch (Exception e){
+                        mText= mText.substring(ZERO,HALF);
+                    }
+                }else
                mText= mText.substring(ZERO,HALF);
             }
 
@@ -153,15 +171,21 @@ public class CustomView extends View {
 
 
          if(imagId!=defaultBorderWidth) {
+             Log.d(TAG, "init: "+imagId);
             mBitmap = BitmapFactory.decodeResource(getResources(), imagId);
-            mBitmapShader = new BitmapShader(mBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-            mPaint = new Paint();
-            mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setShader(mBitmapShader);
+            if(mBitmap!=null) {
+                Log.d(TAG, "init: 333");
+                mBitmapShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+                mPaint = new Paint();
+                mPaint.setStyle(Paint.Style.FILL);
+                mPaint.setShader(mBitmapShader);
+            }
         }
 
 
         textPaint=new Paint();
+        textPaint.setColor(mTextColor);
+        textPaint.setTextAlign(Paint.Align.CENTER);
         //endregion
 
 
@@ -170,37 +194,45 @@ public class CustomView extends View {
         typedArray.recycle();
     }
 
+    private static final String TAG = "CustomView";
+
+    private static final int TWENTY_FOUR = 24 ;
+
     @Override
     protected void onDraw(Canvas canvas) {
 
 
 
-        canvas.drawCircle(getMeasuredWidth()/HALF,getMeasuredHeight()/HALF,(getMeasuredWidth()*TEN)/(24),mBorderPaint);
+
+        canvas.drawCircle(getMeasuredWidth()/HALF,getMeasuredHeight()/HALF,(getMeasuredWidth()*TEN)/TWENTY_FOUR,mBorderPaint);
 
 
-        canvas.drawCircle((getMeasuredWidth()/HALF),(getMeasuredHeight()/HALF),(getMeasuredWidth()*TEN)/(24)-mBorderWidth,backgroundPaint);
+        canvas.drawCircle((getMeasuredWidth()/HALF),(getMeasuredHeight()/HALF),(getMeasuredWidth()*TEN)/TWENTY_FOUR-mBorderWidth,backgroundPaint);
         if(mPaint!=null)
-        canvas.drawCircle((getMeasuredWidth()/HALF),(getMeasuredHeight()/HALF),(getMeasuredWidth()*TEN)/(24)-mBorderWidth,mPaint);
+        canvas.drawCircle((getMeasuredWidth()/HALF),(getMeasuredHeight()/HALF),(getMeasuredWidth()*TEN)/TWENTY_FOUR-mBorderWidth,mPaint);
 
 
-        textPaint.setColor(mTextColor);
         textPaint.setTextSize((getMeasuredWidth()*TEN)/23);
-        textPaint.setTextAlign(Paint.Align.CENTER);
        // canvas=new Canvas(mBitmap);
 
-        canvas.drawText(mText,getMeasuredWidth()/HALF,(getMeasuredHeight()*TEN)/15,textPaint);
-        getDD().draw(canvas);
+       // canvas.drawText(mText,getMeasuredWidth()/HALF,(getMeasuredHeight()*TEN)/15,textPaint);
+
        // canvas.drawBitmap(mBitmap,(getMeasuredWidth()/6),(getMeasuredWidth()/6),backgroundPaint);
 
 
 
 
 
-        if(isPressed()){
-            canvas.drawCircle((getMeasuredWidth()/HALF),(getMeasuredHeight()/HALF),(getMeasuredWidth()*TEN)/(24)-mBorderWidth,backgroundPaint);
+        if(isPressed())
+            canvas.drawCircle((getMeasuredWidth() / HALF), (getMeasuredHeight() / HALF), (getMeasuredWidth() * TEN) / TWENTY_FOUR - mBorderWidth, backgroundPaint);
 
 
-        }
+        RoundedBitmapDrawable roundedBitmapDrawable = getDD();
+        if(roundedBitmapDrawable!=null)
+            roundedBitmapDrawable.draw(canvas);
+        else
+            canvas.drawText(mText,getMeasuredWidth()/HALF,(getMeasuredHeight()*TEN)/15,textPaint);
+
 
 
         super.onDraw(canvas);
@@ -226,10 +258,51 @@ public class CustomView extends View {
 
     private RoundedBitmapDrawable getDD(){
         RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), mBitmap);
-        final float roundPx = (float) mBitmap.getWidth() * 0.06f;
-        roundedBitmapDrawable.setCornerRadius(roundPx);
+        if(mBitmap!=null) {
+            final float roundPx = (float) mBitmap.getWidth() * 0.06f;
+            roundedBitmapDrawable.setCornerRadius(roundPx);
+            return roundedBitmapDrawable;
+        }
+        return null;
 
 
-        return roundedBitmapDrawable;
     }
+
+    @Override
+    public int getMaxWidth() {
+        return super.getMaxWidth();
+    }
+
+
+
+    private Bitmap getBitmapFromDrawable(Drawable drawable) {
+        if (drawable == null) {
+            return null;
+        }
+
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        try {
+            Bitmap bitmap;
+
+            if (drawable instanceof ColorDrawable) {
+                bitmap = Bitmap.createBitmap(COLORDRAWABLE_DIMENSION, COLORDRAWABLE_DIMENSION, BITMAP_CONFIG);
+            } else {
+                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), BITMAP_CONFIG);
+            }
+
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(ZERO, ZERO, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    private static final int COLORDRAWABLE_DIMENSION = 2;
+
+
 }
