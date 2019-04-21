@@ -8,37 +8,22 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorSpace;
-import android.graphics.Matrix;
-import android.graphics.Outline;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.support.annotation.Dimension;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 
 /**
- * Created by GLB-139 on 5/7/2018.
+ * Created by Durgesh on 5/7/2018.
  */
 
 @SuppressLint("AppCompatCustomView")
@@ -157,24 +142,10 @@ public class CustomView extends ImageView {
         mBorderPaint.setColor(mBorderColor);
 
 
-//        mPaint = new Paint();
-//        mPaint.setAntiAlias(true);
-//        mPaint.setDither(true);
-//        mPaint.setColor(0xFF000000);
-//        mPaint.setStyle(Paint.Style.STROKE);
-//        mPaint.setStrokeJoin(Paint.Join.ROUND);
-//        mPaint.setStrokeCap(Paint.Cap.ROUND);
-//        mPaint.setStrokeWidth(3);
-//        mPaint.setStyle(Paint.Style.FILL);
-//        mPaint.setShader(mBitmapShader);
-       // mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-
 
          if(imagId!=defaultBorderWidth) {
-             Log.d(TAG, "init: "+imagId);
             mBitmap = BitmapFactory.decodeResource(getResources(), imagId);
             if(mBitmap!=null) {
-                Log.d(TAG, "init: 333");
                 mBitmapShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
                 mPaint = new Paint();
                 mPaint.setStyle(Paint.Style.FILL);
@@ -194,7 +165,6 @@ public class CustomView extends ImageView {
         typedArray.recycle();
     }
 
-    private static final String TAG = "CustomView";
 
     private static final int TWENTY_FOUR = 24 ;
 
@@ -213,14 +183,6 @@ public class CustomView extends ImageView {
 
 
         textPaint.setTextSize((getMeasuredWidth()*TEN)/23);
-       // canvas=new Canvas(mBitmap);
-
-       // canvas.drawText(mText,getMeasuredWidth()/HALF,(getMeasuredHeight()*TEN)/15,textPaint);
-
-       // canvas.drawBitmap(mBitmap,(getMeasuredWidth()/6),(getMeasuredWidth()/6),backgroundPaint);
-
-
-
 
 
         if(isPressed())
@@ -236,7 +198,6 @@ public class CustomView extends ImageView {
 
 
         super.onDraw(canvas);
-        //canvas.drawCircle(getMeasuredWidth()/2,getMeasuredHeight()/2,(getMeasuredWidth()*10)/(23),backgroundPaint);
 
 
     }
@@ -275,33 +236,6 @@ public class CustomView extends ImageView {
 
 
 
-    private Bitmap getBitmapFromDrawable(Drawable drawable) {
-        if (drawable == null) {
-            return null;
-        }
-
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        }
-
-        try {
-            Bitmap bitmap;
-
-            if (drawable instanceof ColorDrawable) {
-                bitmap = Bitmap.createBitmap(COLORDRAWABLE_DIMENSION, COLORDRAWABLE_DIMENSION, BITMAP_CONFIG);
-            } else {
-                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), BITMAP_CONFIG);
-            }
-
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(ZERO, ZERO, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-            return bitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
     private static final int COLORDRAWABLE_DIMENSION = 2;
 
 
